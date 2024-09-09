@@ -1,120 +1,362 @@
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 public class Main {
+    private static Fussballverein verein;
+    private static final Scanner scanner = new Scanner(System.in);
+
     public static void main(String[] args) {
+        System.out.println("Geben Sie den Vereinsnamen ein:");
+        String name = scanner.nextLine().trim();
+        if (name.isEmpty()) {
+            System.out.println("Die Eingabe darf nicht leer sein!");
+            return;
+        }
+
+        int gruendungsjahr = 0;
+        boolean gueltigeEingabe = false;
+        while (!gueltigeEingabe) {
+            System.out.println("Geben Sie das Gründungsjahr des Vereins ein:");
+            try {
+                gruendungsjahr = scanner.nextInt();
+                scanner.nextLine(); // Konsumieren der verbleibenden Zeile
+                gueltigeEingabe = true; // Eingabe war gültig
+            } catch (InputMismatchException e) {
+                System.out.println("Bitte geben Sie eine gültige Zahl ein.");
+                scanner.next(); // Scanner in den Fehlerzustand zurückversetzen
+            }
+        }
+        verein = new Fussballverein(name, gruendungsjahr);
+
+        boolean running = true;
+        while (running) {
+            System.out.println("\n--- Menü ---");
+            System.out.println("1. Mitglied hinzufügen");
+            System.out.println("2. Mitglied entfernen");
+            System.out.println("3. Spieler hinzufügen");
+            System.out.println("4. Spieler entfernen");
+            System.out.println("5. Trainer hinzufügen");
+            System.out.println("6. Trainer entfernen");
+            System.out.println("7. Spiel hinzufügen");
+            System.out.println("8. Spiel entfernen");
+            System.out.println("9. Mitglieder anzeigen");
+            System.out.println("10. Spieler anzeigen");
+            System.out.println("11. Trainer anzeigen");
+            System.out.println("12. Spiele anzeigen");
+            System.out.println("13. Beenden");
+
+            int auswahl = getAuswahl();
+            switch (auswahl) {
+                case 1:
+                    mitgliedHinzufuegen();
+                    break;
+                case 2:
+                    mitgliedEntfernen();
+                    break;
+                case 3:
+                    spielerHinzufuegen();
+                    break;
+                case 4:
+                    spielerEntfernen();
+                    break;
+                case 5:
+                    trainerHinzufuegen();
+                    break;
+                case 6:
+                    trainerEntfernen();
+                    break;
+                case 7:
+                    spielHinzufuegen();
+                    break;
+                case 8:
+                    spielEntfernen();
+                    break;
+                case 9:
+                    mitgliederAnzeigen();
+                    break;
+                case 10:
+                    spielerAnzeigen();
+                    break;
+                case 11:
+                    trainerAnzeigen();
+                    break;
+                case 12:
+                    spieleAnzeigen();
+                    break;
+                case 13:
+                    running = false;
+                    System.out.println("Programm beendet.");
+                    break;
+                default:
+                    System.out.println("Ungültige Auswahl. Bitte versuchen Sie es erneut.");
+                    break;
+            }
+        }
+    }
+
+    private static int getAuswahl() {
+        System.out.print("Bitte wählen Sie eine Option: ");
         try {
-            // Erstellen eines Fußballvereins mithilfe von Beispieldaten
-            Fussballverein verein = new Fussballverein("FC Beispiel", 1920);
-
-            // Erstellen von Mitgliedern
-            Mitglied mitglied1 = new Mitglied("Max Mustermann", LocalDate.of(1990, 5, 10), "M001");
-            Mitglied mitglied2 = new Mitglied("Erika Mustermann", LocalDate.of(1992, 7, 15), "M002");
-
-            // Erstellen von Spielern
-            Spieler spieler1 = new Spieler("John Doe", LocalDate.of(2000, 1, 20), "S001", "Stürmer", 9);
-            Spieler spieler2 = new Spieler("Jane Doe", LocalDate.of(1998, 3, 22), "S002", "Torwart", 1);
-
-            // Erstellen von Trainern
-            Trainer trainer1 = new Trainer("Peter Müller", LocalDate.of(1980, 11, 5), "T001", 10, "Fitness");
-            Trainer trainer2 = new Trainer("Anna Schmidt", LocalDate.of(1985, 8, 18), "T002", 8, "Taktik");
-
-            // Erstellen von Spielen
-            Spiel spiel1 = new Spiel(LocalDate.of(2024, 9, 10), "Gegnerverein A");
-            Spiel spiel2 = new Spiel(LocalDate.of(2024, 10, 5), "Gegnerverein B");
-
-            // Hinzufügen von Objekten zum Verein
-            addMitglied(verein, mitglied1);
-            addMitglied(verein, mitglied2);
-            addSpieler(verein, spieler1);
-            addSpieler(verein, spieler2);
-            addTrainer(verein, trainer1);
-            addTrainer(verein, trainer2);
-            addSpiel(verein, spiel1);
-            addSpiel(verein, spiel2);
-
-            // Anzeigen der Informationen über den Verein
-            printVereinsInfo(verein);
-
-            // Setzen des Ergebnisses für ein Spiel
-            spiel1.setErgebnis("3:1 Sieg");
-            System.out.println("Ergebnis des Spiels gegen " + spiel1.getGegner() + ": " + spiel1.getErgebnis());
-
-            // Entfernen von Objekten
-            removeMitglied(verein, mitglied2);
-            removeSpieler(verein, spieler2);
-            removeTrainer(verein, trainer2);
-            removeSpiel(verein, spiel2);
-
-            // Anzeigen der aktualisierten Informationen
-            printVereinsInfo(verein);
-
-        } catch (UngueltigeEingabeException e) {
-            System.out.println("Fehler: " + e.getMessage());
+            int auswahl = scanner.nextInt();
+            scanner.nextLine();
+            return auswahl;
+        } catch (InputMismatchException e) {
+            scanner.nextLine(); // Eingabe wird gelöscht
+            return -1;
         }
     }
 
-    private static void addMitglied(Fussballverein verein, Mitglied mitglied) {
-        try {
-            verein.mitgliedHinzufuegen(mitglied);
-        } catch (Exception e) {
-            System.out.println("Fehler beim Hinzufügen des Mitglieds: " + e.getMessage());
+    private static void mitgliedHinzufuegen() {
+        System.out.print("Name des Mitglieds: ");
+        String name = scanner.nextLine().trim();
+        if (name.isEmpty()) {
+            System.out.println("Name darf nicht leer sein!");
+            return;
+        }
+
+        LocalDate geburtsdatum = null;
+        boolean gueltigesDatum = false;
+        while (!gueltigesDatum) {
+            System.out.print("Geburtsdatum (yyyy-mm-dd): ");
+            try {
+                geburtsdatum = LocalDate.parse(scanner.nextLine().trim());
+                gueltigesDatum = true;
+            } catch (DateTimeParseException e) {
+                System.out.println("Bitte geben Sie das Datum im Format yyyy-mm-dd ein.");
+            }
+        }
+
+        String mitgliedsnummer = "";
+        boolean gueltigeNummer = false;
+        while (!gueltigeNummer) {
+            System.out.print("Mitgliedsnummer (6 Ziffern): ");
+            mitgliedsnummer = scanner.nextLine().trim();
+            if (mitgliedsnummer.matches("\\d{6}")) {
+                gueltigeNummer = true;
+            } else {
+                System.out.println("Bitte geben Sie eine gültige Mitgliedsnummer mit 6 Ziffern ein.");
+            }
+        }
+
+        Mitglied mitglied = new Mitglied(name, geburtsdatum, mitgliedsnummer);
+        verein.mitgliedHinzufuegen(mitglied);
+        System.out.println("Mitglied hinzugefügt.");
+    }
+
+    private static void mitgliedEntfernen() {
+        System.out.print("Mitgliedsnummer des zu entfernenden Mitglieds: ");
+        String mitgliedsnummer = scanner.nextLine().trim();
+        boolean gefunden = false;
+        for (Mitglied mitglied : verein.getMitglieder()) {
+            if (mitglied.getMitgliedsnummer().equals(mitgliedsnummer)) {
+                verein.mitgliedEntfernen(mitglied);
+                System.out.println("Mitglied entfernt.");
+                gefunden = true;
+                break;
+            }
+        }
+        if (!gefunden) {
+            System.out.println("Mitglied nicht gefunden.");
         }
     }
 
-    private static void addSpieler(Fussballverein verein, Spieler spieler) {
-        try {
-            verein.spielerHinzufuegen(spieler);
-        } catch (Exception e) {
-            System.out.println("Fehler beim Hinzufügen des Spielers: " + e.getMessage());
+    private static void spielerHinzufuegen() {
+        System.out.print("Name des Spielers: ");
+        String name = scanner.nextLine().trim();
+        System.out.print("Geburtsdatum (yyyy-mm-dd): ");
+        LocalDate geburtsdatum = null;
+        while (geburtsdatum == null) {
+            try {
+                geburtsdatum = LocalDate.parse(scanner.nextLine().trim());
+            } catch (DateTimeParseException e) {
+                System.out.println("Bitte geben Sie das Datum im Format yyyy-mm-dd ein.");
+            }
+        }
+
+        System.out.print("Mitgliedsnummer (6 Ziffern): ");
+        String mitgliedsnummer = scanner.nextLine().trim();
+        System.out.print("Position: ");
+        String position = scanner.nextLine().trim();
+        int trikotnummer = 0;
+        boolean gueltigeTrikotnummer = false;
+        while (!gueltigeTrikotnummer) {
+            System.out.print("Trikotnummer (1-99): ");
+            try {
+                trikotnummer = scanner.nextInt();
+                scanner.nextLine();
+                if (trikotnummer >= 1 && trikotnummer <= 99) {
+                    gueltigeTrikotnummer = true;
+                } else {
+                    System.out.println("Bitte geben Sie eine Trikotnummer zwischen 1 und 99 ein.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Bitte geben Sie eine gültige Zahl ein.");
+                scanner.next();  // Eingabe wird gelöscht
+            }
+        }
+
+        Spieler spieler = new Spieler(name, geburtsdatum, mitgliedsnummer, position, trikotnummer);
+        verein.spielerHinzufuegen(spieler);
+        System.out.println("Spieler hinzugefügt.");
+    }
+
+    private static void spielerEntfernen() {
+        System.out.print("Trikotnummer des zu entfernenden Spielers: ");
+        int trikotnummer;
+        boolean gefunden = false;
+        while (!gefunden) {
+            try {
+                trikotnummer = scanner.nextInt();
+                scanner.nextLine(); // Konsumieren der verbleibenden Zeile
+                for (Spieler spieler : verein.getSpieler()) {
+                    if (spieler.getTrikotnummer() == trikotnummer) {
+                        verein.spielerEntfernen(spieler);
+                        System.out.println("Spieler entfernt.");
+                        gefunden = true;
+                        break;
+                    }
+                }
+                if (!gefunden) {
+                    System.out.println("Spieler nicht gefunden.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Bitte geben Sie eine gültige Zahl ein.");
+                scanner.next(); // Eingabe wird gelöscht
+            }
         }
     }
 
-    private static void addTrainer(Fussballverein verein, Trainer trainer) {
-        try {
-            verein.trainerHinzufuegen(trainer);
-        } catch (Exception e) {
-            System.out.println("Fehler beim Hinzufügen des Trainers: " + e.getMessage());
+    private static void trainerHinzufuegen() {
+        System.out.print("Name des Trainers: ");
+        String name = scanner.nextLine().trim();
+        System.out.print("Geburtsdatum (yyyy-mm-dd): ");
+        LocalDate geburtsdatum = null;
+        while (geburtsdatum == null) {
+            try {
+                geburtsdatum = LocalDate.parse(scanner.nextLine().trim());
+            } catch (DateTimeParseException e) {
+                System.out.println("Bitte geben Sie das Datum im Format yyyy-mm-dd ein.");
+            }
+        }
+
+        System.out.print("Mitgliedsnummer (6 Ziffern): ");
+        String mitgliedsnummer = scanner.nextLine().trim();
+        int erfahrung = 0;
+        boolean gueltigeErfahrung = false;
+        while (!gueltigeErfahrung) {
+            System.out.print("Erfahrung (Jahre): ");
+            try {
+                erfahrung = scanner.nextInt();
+                scanner.nextLine(); // Konsumieren der verbleibenden Zeile
+                if (erfahrung >= 0) {
+                    gueltigeErfahrung = true;
+                } else {
+                    System.out.println("Bitte geben Sie eine gültige Anzahl von Jahren ein.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Bitte geben Sie eine gültige Zahl ein.");
+                scanner.next(); // Scanner in den Fehlerzustand zurückversetzen
+            }
+        }
+
+        System.out.print("Spezialisierung: ");
+        String spezialisierung = scanner.nextLine().trim();
+        Trainer trainer = new Trainer(name, geburtsdatum, mitgliedsnummer, erfahrung, spezialisierung);
+        verein.trainerHinzufuegen(trainer);
+        System.out.println("Trainer hinzugefügt.");
+    }
+
+    private static void trainerEntfernen() {
+        System.out.print("Mitgliedsnummer des zu entfernenden Trainers: ");
+        String mitgliedsnummer = scanner.nextLine().trim();
+        boolean gefunden = false;
+        for (Trainer trainer : verein.getTrainer()) {
+            if (trainer.getMitgliedsnummer().equals(mitgliedsnummer)) {
+                verein.trainerEntfernen(trainer);
+                System.out.println("Trainer entfernt.");
+                gefunden = true;
+                break;
+            }
+        }
+        if (!gefunden) {
+            System.out.println("Trainer nicht gefunden.");
         }
     }
 
-    private static void addSpiel(Fussballverein verein, Spiel spiel) {
-        try {
-            verein.spielHinzufuegen(spiel);
-        } catch (Exception e) {
-            System.out.println("Fehler beim Hinzufügen des Spiels: " + e.getMessage());
+    private static void spielHinzufuegen() {
+        System.out.print("Datum des Spiels (yyyy-mm-dd): ");
+        LocalDate datum = null;
+        while (datum == null) {
+            try {
+                datum = LocalDate.parse(scanner.nextLine().trim());
+            } catch (DateTimeParseException e) {
+                System.out.println("Bitte geben Sie das Datum im Format yyyy-mm-dd ein.");
+            }
+        }
+
+        System.out.print("Gegner: ");
+        String gegner = scanner.nextLine().trim();
+
+        System.out.print("Ergebnis (z.B. 2:1): ");
+        String ergebnis = scanner.nextLine().trim();
+
+        Spiel spiel = new Spiel(datum, gegner, ergebnis);
+        verein.spielHinzufuegen(spiel);
+        System.out.println("Spiel hinzugefügt.");
+    }
+
+    private static void spielEntfernen() {
+        System.out.print("Datum des zu entfernenden Spiels (yyyy-mm-dd): ");
+        LocalDate datum = null;
+        while (datum == null) {
+            try {
+                datum = LocalDate.parse(scanner.nextLine().trim());
+            } catch (DateTimeParseException e) {
+                System.out.println("Bitte geben Sie das Datum im Format yyyy-mm-dd ein.");
+            }
+        }
+
+        boolean gefunden = false;
+        for (Spiel spiel : verein.getSpiele()) {
+            if (spiel.getDatum().equals(datum)) {
+                verein.spielEntfernen(spiel);
+                System.out.println("Spiel entfernt.");
+                gefunden = true;
+                break;
+            }
+        }
+        if (!gefunden) {
+            System.out.println("Spiel nicht gefunden.");
         }
     }
 
-    private static void removeMitglied(Fussballverein verein, Mitglied mitglied) {
-        if (!verein.getMitglieder().remove(mitglied)) {
-            System.out.println("Mitglied konnte nicht entfernt werden.");
+    private static void mitgliederAnzeigen() {
+        System.out.println("\n--- Mitglieder ---");
+        for (Mitglied mitglied : verein.getMitglieder()) {
+            System.out.println(mitglied);
         }
     }
 
-    private static void removeSpieler(Fussballverein verein, Spieler spieler) {
-        if (!verein.getSpieler().remove(spieler)) {
-            System.out.println("Spieler konnte nicht entfernt werden.");
+    private static void spielerAnzeigen() {
+        System.out.println("\n--- Spieler ---");
+        for (Spieler spieler : verein.getSpieler()) {
+            System.out.println(spieler);
         }
     }
 
-    private static void removeTrainer(Fussballverein verein, Trainer trainer) {
-        if (!verein.getTrainer().remove(trainer)) {
-            System.out.println("Trainer konnte nicht entfernt werden.");
+    private static void trainerAnzeigen() {
+        System.out.println("\n--- Trainer ---");
+        for (Trainer trainer : verein.getTrainer()) {
+            System.out.println(trainer);
         }
     }
 
-    private static void removeSpiel(Fussballverein verein, Spiel spiel) {
-        if (!verein.getSpiele().remove(spiel)) {
-            System.out.println("Spiel konnte nicht entfernt werden.");
+    private static void spieleAnzeigen() {
+        System.out.println("\n--- Spiele ---");
+        for (Spiel spiel : verein.getSpiele()) {
+            System.out.println(spiel);
         }
-    }
-
-    private static void printVereinsInfo(Fussballverein verein) {
-        System.out.println("Name: " + verein.getName());
-        System.out.println("Gründungsjahr: " + verein.getGruendungsjahr());
-        System.out.println("Mitglieder: " + verein.getMitglieder().size());
-        System.out.println("Spieler: " + verein.getSpieler().size());
-        System.out.println("Trainer: " + verein.getTrainer().size());
-        System.out.println("Spiele: " + verein.getSpiele().size());
     }
 }

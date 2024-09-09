@@ -6,35 +6,41 @@ public class Mitglied {
     private final LocalDate geburtsdatum;
     private final String mitgliedsnummer;
 
-    public Mitglied(String name, LocalDate geburtsdatum, String mitgliedsnummer) throws UngueltigeEingabeException {
+    // Konstruktor
+    public Mitglied(String name, LocalDate geburtsdatum, String mitgliedsnummer) {
         if (name == null || name.isEmpty()) {
-            throw new UngueltigeEingabeException("Name darf nicht leer sein.");
+            throw new IllegalArgumentException("Name darf nicht leer sein.");
         }
-        if (geburtsdatum == null) {
-            throw new UngueltigeEingabeException("Geburtsdatum darf nicht null sein.");
-        }
-        if (mitgliedsnummer == null || mitgliedsnummer.isEmpty()) {
-            throw new UngueltigeEingabeException("Mitgliedsnummer darf nicht leer sein.");
-        }
-        // Beispiel für eine einfache Mitgliedsnummer-Validierung
-        if (!Pattern.matches("\\d{6}", mitgliedsnummer)) { // Mitgliedsnummer muss 6 Ziffern lang sein
-            throw new UngueltigeEingabeException("Mitgliedsnummer muss genau 6 Ziffern lang sein.");
-        }
-
         this.name = name;
+
+        if (geburtsdatum == null) {
+            throw new IllegalArgumentException("Geburtsdatum darf nicht null sein.");
+        }
         this.geburtsdatum = geburtsdatum;
+
+        if (mitgliedsnummer == null || mitgliedsnummer.isEmpty() || !Pattern.matches("\\d{6}", mitgliedsnummer)) {
+            throw new IllegalArgumentException("Mitgliedsnummer muss genau 6 Ziffern lang sein.");
+        }
         this.mitgliedsnummer = mitgliedsnummer;
     }
 
+    // Getter für Name
     public String getName() {
         return name;
     }
 
+    // Getter für Geburtsdatum
     public LocalDate getGeburtsdatum() {
         return geburtsdatum;
     }
 
+    // Getter für Mitgliedsnummer
     public String getMitgliedsnummer() {
         return mitgliedsnummer;
+    }
+
+    @Override
+    public String toString() {
+        return "Name: " + getName() + ", Geburtsdatum: " + getGeburtsdatum() + ", Mitgliedsnummer: " + getMitgliedsnummer();
     }
 }

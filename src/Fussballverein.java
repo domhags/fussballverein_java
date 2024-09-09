@@ -1,110 +1,132 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-
+import java.util.HashSet;
+import java.util.Set;
 
 public class Fussballverein {
     private final String name;
     private final int gruendungsjahr;
-    private final List<Mitglied> mitgliedschaften;
-    private final List<Spieler> spieler;
-    private final List<Trainer> trainer;
-    private final List<Spiel> spiele;
+    private final Set<Mitglied> mitgliedschaften;
+    private final Set<Spieler> spieler;
+    private final Set<Trainer> trainer;
+    private final Set<Spiel> spiele;
 
-    public Fussballverein(String name, int gruendungsjahr) throws UngueltigeEingabeException {
-        if (name == null || name.isEmpty()) {
-            throw new UngueltigeEingabeException("Der Name des Vereins darf nicht leer sein.");
-        }
-        if (gruendungsjahr <= 0) {
-            throw new UngueltigeEingabeException("Das Gründungsjahr muss eine positive Zahl sein.");
-        }
-
+    // Konstruktor
+    public Fussballverein(String name, int gruendungsjahr) {
         this.name = name;
         this.gruendungsjahr = gruendungsjahr;
-        this.mitgliedschaften = new ArrayList<>();
-        this.spieler = new ArrayList<>();
-        this.trainer = new ArrayList<>();
-        this.spiele = new ArrayList<>();
+        this.mitgliedschaften = new HashSet<>();
+        this.spieler = new HashSet<>();
+        this.trainer = new HashSet<>();
+        this.spiele = new HashSet<>();
     }
 
-    public void mitgliedHinzufuegen(Mitglied mitglied) throws UngueltigeEingabeException {
+    // Fügt ein Mitglied hinzu
+    public void mitgliedHinzufuegen(Mitglied mitglied) {
         if (mitglied == null) {
-            throw new UngueltigeEingabeException("Mitglied darf nicht null sein.");
+            throw new IllegalArgumentException("Mitglied darf nicht null sein.");
         }
-        for (Mitglied m : mitgliedschaften) {
-            if (m != null && m.getMitgliedsnummer().equals(mitglied.getMitgliedsnummer())) {
-                throw new UngueltigeEingabeException("Mitgliedsnummer muss eindeutig sein.");
-            }
+        if (mitgliedschaften.contains(mitglied)) {
+            throw new IllegalArgumentException("Mitglied ist bereits im Verein.");
         }
         mitgliedschaften.add(mitglied);
     }
 
-    public void mitgliedEntfernen(Mitglied mitglied) throws NoSuchElementException {
-        if (mitglied == null || !mitgliedschaften.remove(mitglied)) {
-            throw new NoSuchElementException("Mitglied wurde nicht gefunden oder ist null.");
+    // Entfernt ein Mitglied
+    public void mitgliedEntfernen(Mitglied mitglied) {
+        if (mitglied == null || !mitgliedschaften.contains(mitglied)) {
+            throw new IllegalArgumentException("Mitglied existiert nicht.");
         }
+        mitgliedschaften.remove(mitglied);
     }
 
-    public void spielerHinzufuegen(Spieler spieler) throws UngueltigeEingabeException {
+    // Fügt einen Spieler hinzu
+    public void spielerHinzufuegen(Spieler spieler) {
         if (spieler == null) {
-            throw new UngueltigeEingabeException("Spieler darf nicht null sein.");
+            throw new IllegalArgumentException("Spieler darf nicht null sein.");
+        }
+        if (this.spieler.contains(spieler)) {
+            throw new IllegalArgumentException("Spieler ist bereits im Verein.");
         }
         this.spieler.add(spieler);
     }
 
-    public void spielerEntfernen(Spieler spieler) throws NoSuchElementException {
-        if (spieler == null || !this.spieler.remove(spieler)) {
-            throw new NoSuchElementException("Spieler wurde nicht gefunden oder ist null.");
+    //Entfernt einen Spieler
+    public void spielerEntfernen(Spieler spieler) {
+        if (spieler == null || !this.spieler.contains(spieler)) {
+            throw new IllegalArgumentException("Spieler existiert nicht.");
         }
+        this.spieler.remove(spieler);
     }
 
-    public void trainerHinzufuegen(Trainer trainer) throws UngueltigeEingabeException {
+    // Fügt einen Trainer hinzu
+    public void trainerHinzufuegen(Trainer trainer) {
         if (trainer == null) {
-            throw new UngueltigeEingabeException("Trainer darf nicht null sein.");
+            throw new IllegalArgumentException("Trainer darf nicht null sein.");
+        }
+        if (this.trainer.contains(trainer)) {
+            throw new IllegalArgumentException("Trainer ist bereits im Verein.");
         }
         this.trainer.add(trainer);
     }
 
-    public void trainerEntfernen(Trainer trainer) throws NoSuchElementException {
-        if (trainer == null || !this.trainer.remove(trainer)) {
-            throw new NoSuchElementException("Trainer wurde nicht gefunden oder ist null.");
+    // Entfernt einen Trainer
+    public void trainerEntfernen(Trainer trainer) {
+        if (trainer == null || !this.trainer.contains(trainer)) {
+            throw new IllegalArgumentException("Trainer existiert nicht.");
         }
+        this.trainer.remove(trainer);
     }
 
-    public void spielHinzufuegen(Spiel spiel) throws UngueltigeEingabeException {
+    // Fügt ein Spiel hinzu
+    public void spielHinzufuegen(Spiel spiel) {
         if (spiel == null) {
-            throw new UngueltigeEingabeException("Spiel darf nicht null sein.");
+            throw new IllegalArgumentException("Spiel darf nicht null sein.");
         }
         spiele.add(spiel);
     }
 
-    public void spielEntfernen(Spiel spiel) throws NoSuchElementException {
-        if (spiel == null || !spiele.remove(spiel)) {
-            throw new NoSuchElementException("Spiel wurde nicht gefunden oder ist null.");
+    // Entfernt ein Spiel
+    public void spielEntfernen(Spiel spiel) {
+        if (spiel == null || !spiele.contains(spiel)) {
+            throw new IllegalArgumentException("Spiel existiert nicht.");
         }
+        spiele.remove(spiel);
     }
 
-    public List<Mitglied> getMitglieder() {
-        return new ArrayList<>(mitgliedschaften);
+    // Getter für die Spiele
+    public Set<Spiel> getSpiele() {
+        return spiele;
     }
 
-    public List<Spieler> getSpieler() {
-        return new ArrayList<>(spieler);
+    // Getter für die Trainer
+    public Set<Trainer> getTrainer() {
+        return trainer;
     }
 
-    public List<Trainer> getTrainer() {
-        return new ArrayList<>(trainer);
+    // Getter für die Spieler
+    public Set<Spieler> getSpieler() {
+        return spieler;
     }
 
-    public List<Spiel> getSpiele() {
-        return new ArrayList<>(spiele);
+    // Getter für die Mitglieder
+    public Set<Mitglied> getMitglieder() {
+        return mitgliedschaften;
     }
 
+    // Getter für Name
     public String getName() {
         return name;
     }
 
+    // Getter für Gründungsjahr
     public int getGruendungsjahr() {
         return gruendungsjahr;
+    }
+
+    @Override
+    public String toString() {
+        return "Fussballverein{" +
+                "name='" + getName() + '\'' +
+                ", gruendungsjahr=" + getGruendungsjahr() +
+                '}';
     }
 }

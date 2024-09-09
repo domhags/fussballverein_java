@@ -3,37 +3,41 @@ import java.time.LocalDate;
 public class Spiel {
     private final LocalDate datum;
     private final String gegner;
-    private String ergebnis;
+    private final String ergebnis;
 
-    public Spiel(LocalDate datum, String gegner) throws UngueltigeEingabeException {
+    // Konstruktor
+    public Spiel(LocalDate datum, String gegner, String ergebnis) {
         if (datum == null) {
-            throw new UngueltigeEingabeException("Datum darf nicht null sein.");
+            throw new IllegalArgumentException("Datum darf nicht null sein.");
         }
         if (gegner == null || gegner.isEmpty()) {
-            throw new UngueltigeEingabeException("Gegner darf nicht null oder leer sein.");
+            throw new IllegalArgumentException("Gegner darf nicht leer oder null sein.");
         }
-
+        if (ergebnis == null || ergebnis.isEmpty()) {
+            throw new IllegalArgumentException("Ergebnis darf nicht leer oder null sein.");
+        }
         this.datum = datum;
         this.gegner = gegner;
-        this.ergebnis = "Noch nicht gespielt";
+        this.ergebnis = ergebnis;
     }
 
+    // Getter für Datum
     public LocalDate getDatum() {
         return datum;
     }
 
+    // Getter für Gegner
     public String getGegner() {
         return gegner;
     }
 
+    // Getter für Ergebnis
     public String getErgebnis() {
         return ergebnis;
     }
 
-    public void setErgebnis(String ergebnis) throws UngueltigeEingabeException {
-        if (ergebnis == null || ergebnis.isEmpty()) {
-            throw new UngueltigeEingabeException("Ergebnis darf nicht null oder leer sein.");
-        }
-        this.ergebnis = ergebnis;
+    @Override
+    public String toString() {
+        return "Spiel vom: " + getDatum() + ", Gegner: " + getGegner() + ", Ergebnis: " + getErgebnis();
     }
 }
